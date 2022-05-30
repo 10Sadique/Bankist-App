@@ -11,7 +11,7 @@
 }
 
 html {
-  font-size: 62.5%;
+  font-size: 62.5%; /* * 1rem = 10px * */
   box-sizing: border-box;
 }
 
@@ -23,6 +23,7 @@ body {
   padding: 2rem;
 }
 
+/* * NAVIGATION * */
 nav {
   display: flex;
   justify-content: space-between;
@@ -94,7 +95,7 @@ nav {
   gap: 2rem;
 
   /* NOTE This creates the fade in/out anumation */
-  opacity: 0;
+  /* opacity: 0; */
   transition: all 1s;
 }
 
