@@ -81,3 +81,27 @@ const displayMovements = function (movement) {
 };
 displayMovements(account1.movements);
 
+// Displaying current balance
+const calcDisplayBalance = function (movements) {
+    const balance = movements.reduce((acc, mov) => acc + mov, 0);
+    labelBalance.textContent = `${balance} EUR`;
+};
+calcDisplayBalance(account1.movements);
+
+// User Account Creation
+const createUsernames = accs =>
+    accs.forEach(
+        acc =>
+            (acc.username = acc.owner
+                .toLowerCase()
+                .split(' ')
+                .map(user => user[0])
+                .join(''))
+    );
+
+createUsernames(accounts);
+
+
+
+
+
