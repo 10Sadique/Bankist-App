@@ -17,25 +17,25 @@ Foobar is a Python library for dealing with word pluralization.
 ### Username & PIN
 
 <ol>
-  <li>**Jafar Sadique**
+  <li><b>Jafar Sadique</b>
       <ol>
         <li>username: js</li>
         <li>pin: 1111</li>
       </ol>
   </li>
-  <li>**Raiyan Ifty**
+  <li><b>Raiyan Ifty</b>
       <ol>
         <li>username: ri</li>
         <li>pin: 2222</li>
       </ol>
   </li>
-  <li>**Iftekhar Uddin Ahmed**
+  <li><b>Iftekhar Uddin Ahmed</b>
       <ol>
         <li>username: iua</li>
         <li>pin: 3333</li>
       </ol>
   </li>
-  <li>**Nazmul Rony**
+  <li><b>Nazmul Rony</b>
       <ol>
         <li>username: nr</li>
         <li>pin: 4444</li>
