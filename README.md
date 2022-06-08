@@ -43,4 +43,4 @@ Foobar is a Python library for dealing with word pluralization.
   </li>
 </ol>
 
-### Live link:
+### Live link: https://10sadique.github.io/Bankist-App/
