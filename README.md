@@ -17,6 +17,8 @@ Foobar is a Python library for dealing with word pluralization.
 
 ### Username & PIN
 
+<p>The username is created by taking the first letter of each name. <br> Example: <br>For the owner "Jafar Sadique" the user name is "js" which is made by taking first letters of the names.</p>
+
 <ol>
   <li><b>Jafar Sadique</b>
       <ul>
