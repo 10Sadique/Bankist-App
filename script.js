@@ -82,13 +82,11 @@ const displayMovements = function (movement) {
     })
 }
 
-
 // Displaying current balance
-const calcDisplayBalance = function (movements) {
-    const balance = movements.reduce((acc, mov) => acc + mov, 0)
-    labelBalance.textContent = `${balance}€`
+const calcDisplayBalance = function (acc) {
+    acc.balance = acc.movements.reduce((acc, mov) => acc + mov, 0)
+    labelBalance.textContent = `${acc.balance}€`
 }
-
 
 // Calculating the incomeing and outgoing balance
 const calcDisplaySummery = function (acc) {
@@ -102,7 +100,7 @@ const calcDisplaySummery = function (acc) {
 
     const interest = acc.movements
         .filter(mov => mov > 0)
-        .map(deposit => deposit * acc.interestRate / 100)
+        .map(deposit => (deposit * acc.interestRate) / 100)
         .filter(int => int >= 1)
         .reduce((acc, int) => acc + int, 0)
 
@@ -110,7 +108,6 @@ const calcDisplaySummery = function (acc) {
     labelSumOut.textContent = `${Math.trunc(Math.abs(outgoing))}€`
     labelSumInterest.textContent = `${interest}€`
 }
-
 
 // User Account Creation
 const createUsernames = function (accs) {
@@ -127,30 +124,65 @@ createUsernames(accounts)
 // Event Handlers
 let currentAccount
 
-btnLogin.addEventListener('click', function(e) {
+btnLogin.addEventListener('click', function (e) {
     e.preventDefault() // Prevent form from submitting
 
-    currentAccount = accounts.find(acc => acc.username === inputLoginUsername.value)
+    currentAccount = accounts.find(
+        acc => acc.username === inputLoginUsername.value
+    )
 
-    if(currentAccount?.pin === Number(inputLoginPin.value)) {
-
+    if (currentAccount?.pin === Number(inputLoginPin.value)) {
         // Display UI and message
-        labelWelcome.textContent = `Welcome back, ${currentAccount.owner.split(' ')[0]}`
+        labelWelcome.textContent = `Welcome back, ${
+            currentAccount.owner.split(' ')[0]
+        }`
         containerApp.style.opacity = 100
 
         // Clear the input fields
         inputLoginUsername.value = inputLoginPin.value = ''
         inputLoginPin.blur()
 
-
-        // Display movements
-        displayMovements(currentAccount.movements)
-        
-        // Display balance
-        calcDisplayBalance(currentAccount.movements)
-
-        // Display summery
-        calcDisplaySummery(currentAccount)
+        updateUI(currentAccount)
     }
 })
 
+// Updationg UI
+const updateUI = function (acc) {
+    // Display movements
+    displayMovements(acc.movements)
+
+    // Display balance
+    calcDisplayBalance(acc)
+
+    // Display summery
+    calcDisplaySummery(acc)
+}
+
+// Transfering Money
+btnTransfer.addEventListener('click', function (e) {
+    e.preventDefault()
+
+    const amount = Number(inputTransferAmount.value)
+    const receiverAcc = accounts.find(
+        acc => acc.username === inputTransferTo.value
+    ) // Checks the username for transfer is valid or not.
+
+    // Cleaning the input fields
+    inputTransferAmount.value = inputTransferTo.value = ''
+
+    if (
+        amount > 0 &&
+        receiverAcc &&
+        currentAccount.balance >= amount &&
+        receiverAcc?.username !== currentAccount.username
+    ) {
+        // Transfer Process
+        currentAccount.movements.push(-amount)
+        receiverAcc.movements.push(amount)
+
+        // Update UI
+        updateUI(currentAccount)
+    }
+
+    console.log(amount, receiverAcc)
+})
