@@ -136,6 +136,8 @@ btnLogin.addEventListener('click', function (e) {
         labelWelcome.textContent = `Welcome back, ${
             currentAccount.owner.split(' ')[0]
         }`
+
+        // Showing the account
         containerApp.style.opacity = 100
 
         // Clear the input fields
@@ -185,4 +187,26 @@ btnTransfer.addEventListener('click', function (e) {
     }
 
     console.log(amount, receiverAcc)
+})
+
+// Closing account event handler
+btnClose.addEventListener('click', function (e) {
+    e.preventDefault()
+    
+    const user = inputCloseUsername.value
+    const pin = Number(inputClosePin.value)
+
+    
+    if (user === currentAccount.username && pin === currentAccount.pin) {
+        const index = accounts.findIndex(acc => acc.username === currentAccount.username)
+        
+        // Delete account
+        accounts.splice(index, 1)
+        
+        // Hide the account
+        containerApp.style.opacity = 0
+    }
+    inputCloseUsername.value = inputClosePin.value = ''
+    inputClosePin.blur()
+
 })
