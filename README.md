@@ -4,7 +4,7 @@ Foobar is a Python library for dealing with word pluralization.
 
 ## What is Bankist?
 
-<p>This a demo banking app. It has a working user login system. The money transfer between accounts is also working. Currently there are four predefined user accounts and each account has-</p>
+<p>This a demo banking app. It has a working user login system. The money transfer between accounts is also working. The existing accounts can be closed forever if the user wants to. The Account Closing process is working. Currently there are four predefined user accounts and each account has-</p>
 
 -   owner name
 -   username
