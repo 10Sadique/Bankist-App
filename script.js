@@ -169,9 +169,6 @@ btnTransfer.addEventListener('click', function (e) {
         acc => acc.username === inputTransferTo.value
     ) // Checks the username for transfer is valid or not.
 
-    // Cleaning the input fields
-    inputTransferAmount.value = inputTransferTo.value = ''
-
     if (
         amount > 0 &&
         receiverAcc &&
@@ -186,27 +183,51 @@ btnTransfer.addEventListener('click', function (e) {
         updateUI(currentAccount)
     }
 
-    console.log(amount, receiverAcc)
+    // Cleaning the input fields
+    inputTransferAmount.value = inputTransferTo.value = ''
+})
+
+// Loan Evant Handler
+btnLoan.addEventListener('click', function (e) {
+    e.preventDefault()
+
+    const amount = Number(inputLoanAmount.value)
+
+    if (
+        amount > 0 &&
+        currentAccount.movements.some(mov => mov >= amount * 0.1)
+    ) {
+        // Adding the loan amount
+        currentAccount.movements.push(amount)
+
+        // Updating UI
+        updateUI(currentAccount)
+    }
+
+    inputLoanAmount.value = ''
+    inputLoanAmount.blur()
 })
 
 // Closing account event handler
 btnClose.addEventListener('click', function (e) {
     e.preventDefault()
-    
+
     const user = inputCloseUsername.value
     const pin = Number(inputClosePin.value)
 
-    
     if (user === currentAccount.username && pin === currentAccount.pin) {
-        const index = accounts.findIndex(acc => acc.username === currentAccount.username)
-        
+        const index = accounts.findIndex(
+            acc => acc.username === currentAccount.username
+        )
+
         // Delete account
         accounts.splice(index, 1)
-        
+
         // Hide the account
         containerApp.style.opacity = 0
     }
+
     inputCloseUsername.value = inputClosePin.value = ''
     inputClosePin.blur()
-
 })
+
