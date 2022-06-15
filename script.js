@@ -64,10 +64,12 @@ const inputClosePin = document.querySelector('.form__input--pin')
 // Functionality of the bankist app
 
 // Displaying movements
-const displayMovements = function (movement) {
+const displayMovements = function (movement, sort = false) {
     containerMovements.innerHTML = ''
 
-    movement.forEach((mov, i) => {
+    const movs = sort ? movement.slice().sort((a, b) => a - b) : movement // Sorting of movements array
+
+    movs.forEach((mov, i) => {
         const type = mov > 0 ? 'deposit' : 'withdrawal'
 
         const html = `
@@ -229,5 +231,14 @@ btnClose.addEventListener('click', function (e) {
 
     inputCloseUsername.value = inputClosePin.value = ''
     inputClosePin.blur()
+})
+
+// Sort Event Handler
+let sorted = false
+btnSort.addEventListener('click', function (e) {
+    e.preventDefault()
+    
+    displayMovements(currentAccount.movements, !sorted)
+    sorted = !sorted
 })
 
