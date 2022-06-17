@@ -32,5 +32,5 @@ Foobar is a Python library for dealing with word pluralization.
         <li>pin: 2222</li>
       </ul>
   </li>
-
+</ol>
 ### <a href="https://10sadique.github.io/Bankist-App/" target="_blank">Live Link</a>
