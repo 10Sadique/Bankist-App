@@ -80,19 +80,30 @@ const inputClosePin = document.querySelector('.form__input--pin')
 // Functionality of the bankist app
 
 // Displaying movements
-const displayMovements = function (movement, sort = false) {
+const displayMovements = function (acc, sort = false) {
     containerMovements.innerHTML = ''
 
-    const movs = sort ? movement.slice().sort((a, b) => a - b) : movement // Sorting of movements array
+    const movs = sort
+        ? acc.movements.slice().sort((a, b) => a - b)
+        : acc.movements // Sorting of movements array
 
     movs.forEach((mov, i) => {
         const type = mov > 0 ? 'deposit' : 'withdrawal'
+
+        const date = new Date(acc.movementsDates[i])
+        const now = new Date()
+        const day = `${date.getDate()}`.padStart(2, 0)
+        const month = `${date.getMonth() + 1}`.padStart(2, 0)
+        const year = date.getFullYear()
+
+        const displayDate = `${day}/${month}/${year}`
 
         const html = `
           <div class="movements__row">
             <div class="movements__type movements__type--${type}">${
             i + 1
         } ${type}</div>
+            <div class="movements__date">${displayDate}</div>
             <div class="movements__value">${mov.toFixed(2)}</div>
           </div>`
 
@@ -141,7 +152,7 @@ createUsernames(accounts)
 // Updationg UI
 const updateUI = function (acc) {
     // Display movements
-    displayMovements(acc.movements)
+    displayMovements(acc)
 
     // Display balance
     calcDisplayBalance(acc)
@@ -154,6 +165,11 @@ const updateUI = function (acc) {
 ////////////////////////////////////
 // Event Handlers
 let currentAccount
+
+// FAKE ALWAYS LOGIN
+currentAccount = account1
+updateUI(currentAccount)
+containerApp.style.opacity = 100
 
 btnLogin.addEventListener('click', function (e) {
     e.preventDefault() // Prevent form from submitting
@@ -170,6 +186,15 @@ btnLogin.addEventListener('click', function (e) {
 
         // Showing the account
         containerApp.style.opacity = 100
+
+        // Create current date and time
+        const now = new Date()
+        const day = `${now.getDate()}`.padStart(2, 0)
+        const month = `${now.getMonth() + 1}`.padStart(2, 0)
+        const year = now.getFullYear()
+        const hour = `${now.getHours()}`.padStart(2, 0)
+        const mins = `${now.getMinutes()}`.padStart(2, 0)
+        labelDate.textContent = `${day}/${month}/${year}, ${hour}:${mins}`
 
         // Clear the input fields
         inputLoginUsername.value = inputLoginPin.value = ''
@@ -198,6 +223,10 @@ btnTransfer.addEventListener('click', function (e) {
         currentAccount.movements.push(-amount)
         receiverAcc.movements.push(amount)
 
+        // Add date and time
+        currentAccount.movementsDates.push(new Date().toISOString())
+        receiverAcc.movementsDates.push(new Date().toISOString())
+
         // Update UI
         updateUI(currentAccount)
     }
@@ -218,6 +247,9 @@ btnLoan.addEventListener('click', function (e) {
     ) {
         // Adding the loan amount
         currentAccount.movements.push(amount)
+
+        // Add date
+        currentAccount.movementsDates.push(new Date().toISOString())
 
         // Updating UI
         updateUI(currentAccount)
