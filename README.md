@@ -26,7 +26,7 @@
   </li>
 </ul>
 
-<p>The app automatically logs out the user after 10 minutes if there is no activity in the app. <br>The timer resets if there is an activity in the app</p>
+<p>The app automatically logs out the user after 10 minutes if there is no activity in the app. <br>The timer resets if there is an activity in the app.</p>
 
 <hr>
 
