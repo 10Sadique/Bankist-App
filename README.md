@@ -12,6 +12,22 @@
 
 <hr>
 
+### Features
+
+<ul>
+  <li>
+    Transfering money to another account.
+  </li>
+  <li>
+    Taking loan from the Bank.
+  </li>
+  <li>
+    Closing or deleting account.
+  </li>
+</ul>
+
+<hr>
+
 ### Username & PIN
 
 <p>The username is created by taking the first letter of each name. <br> Example: <br>For the owner "Jafar Sadique" the user name is "js" which is made by taking first letters of the names.</p>
