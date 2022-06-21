@@ -21,8 +21,8 @@ const account1 = {
         '2022-06-15T23:36:17.929Z',
         '2022-06-19T10:51:36.790Z',
     ],
-    currency: 'EUR',
-    locale: 'en-UK', // de-DE
+    currency: 'GBP',
+    locale: 'en-GB', // de-DE
 }
 
 const account2 = {
@@ -96,6 +96,14 @@ const formatMovementDate = function (date, locale) {
     }
 }
 
+// Formatted Numbers
+const formatCurrency = function (value, locale, currency) {
+    return new Intl.NumberFormat(locale, {
+        style: 'currency',
+        currency: currency
+    }).format(value)
+}
+
 // Displaying movements
 const displayMovements = function (acc, sort = false) {
     containerMovements.innerHTML = ''
@@ -112,6 +120,8 @@ const displayMovements = function (acc, sort = false) {
         const date = new Date(acc.movementsDates[i])
         const displayDate = formatMovementDate(date, acc.locale)
 
+        const formattedMov = formatCurrency(mov, acc.locale, acc.currency)
+
         // Printing movements to the App
         const html = `
           <div class="movements__row">
@@ -119,7 +129,7 @@ const displayMovements = function (acc, sort = false) {
             i + 1
         } ${type}</div>
             <div class="movements__date">${displayDate}</div>
-            <div class="movements__value">${mov.toFixed(2)}</div>
+            <div class="movements__value">${formattedMov}</div>
           </div>`
 
         containerMovements.insertAdjacentHTML('afterbegin', html)
@@ -129,27 +139,40 @@ const displayMovements = function (acc, sort = false) {
 // Displaying current balance
 const calcDisplayBalance = function (acc) {
     acc.balance = acc.movements.reduce((acc, mov) => acc + mov, 0)
-    labelBalance.textContent = `${acc.balance.toFixed(2)}€`
+
+    const formattedBalance = formatCurrency(acc.balance, acc.locale, acc.currency)
+
+    labelBalance.textContent = formattedBalance
 }
 
 // Calculating the incomeing and outgoing balance
 const calcDisplaySummery = function (acc) {
+
+    // Income Summery
     const incomes = acc.movements
         .filter(mov => mov > 0)
         .reduce((acc, mov) => acc + mov, 0)
-    labelSumIn.textContent = `${incomes.toFixed(2)}€`
+    
+    const formattedIN = formatCurrency(incomes, acc.locale, acc.currency)
+    labelSumIn.textContent = formattedIN
 
+    // Outgoing Summery
     const outgoing = acc.movements
         .filter(mov => mov < 0)
         .reduce((acc, mov) => acc + mov, 0)
-    labelSumOut.textContent = `${Math.abs(outgoing.toFixed(2))}€`
+    
+    const formattedOut = formatCurrency(Math.abs(outgoing), acc.locale, acc.currency)
+    labelSumOut.textContent = formattedOut
 
+    // Interest rate summery
     const interest = acc.movements
         .filter(mov => mov > 0)
         .map(deposit => (deposit * acc.interestRate) / 100)
         .filter(int => int >= 1)
         .reduce((acc, int) => acc + int, 0)
-    labelSumInterest.textContent = `${interest.toFixed(2)}€`
+    
+    const formattedInterest = formatCurrency(interest, acc.locale, acc.currency)
+    labelSumInterest.textContent = formattedInterest
 }
 
 // User Account Creation
@@ -182,9 +205,9 @@ const updateUI = function (acc) {
 let currentAccount
 
 // FAKE ALWAYS LOGIN
-// currentAccount = account1
-// updateUI(currentAccount)
-// containerApp.style.opacity = 100
+currentAccount = account1
+updateUI(currentAccount)
+containerApp.style.opacity = 100
 
 
 // Login event handler
@@ -314,3 +337,5 @@ btnSort.addEventListener('click', function (e) {
     displayMovements(currentAccount.movements, !sorted)
     sorted = !sorted
 })
+
+
