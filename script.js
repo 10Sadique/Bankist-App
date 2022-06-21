@@ -100,7 +100,7 @@ const formatMovementDate = function (date, locale) {
 const formatCurrency = function (value, locale, currency) {
     return new Intl.NumberFormat(locale, {
         style: 'currency',
-        currency: currency
+        currency: currency,
     }).format(value)
 }
 
@@ -140,19 +140,22 @@ const displayMovements = function (acc, sort = false) {
 const calcDisplayBalance = function (acc) {
     acc.balance = acc.movements.reduce((acc, mov) => acc + mov, 0)
 
-    const formattedBalance = formatCurrency(acc.balance, acc.locale, acc.currency)
+    const formattedBalance = formatCurrency(
+        acc.balance,
+        acc.locale,
+        acc.currency
+    )
 
     labelBalance.textContent = formattedBalance
 }
 
 // Calculating the incomeing and outgoing balance
 const calcDisplaySummery = function (acc) {
-
     // Income Summery
     const incomes = acc.movements
         .filter(mov => mov > 0)
         .reduce((acc, mov) => acc + mov, 0)
-    
+
     const formattedIN = formatCurrency(incomes, acc.locale, acc.currency)
     labelSumIn.textContent = formattedIN
 
@@ -160,8 +163,12 @@ const calcDisplaySummery = function (acc) {
     const outgoing = acc.movements
         .filter(mov => mov < 0)
         .reduce((acc, mov) => acc + mov, 0)
-    
-    const formattedOut = formatCurrency(Math.abs(outgoing), acc.locale, acc.currency)
+
+    const formattedOut = formatCurrency(
+        Math.abs(outgoing),
+        acc.locale,
+        acc.currency
+    )
     labelSumOut.textContent = formattedOut
 
     // Interest rate summery
@@ -170,7 +177,7 @@ const calcDisplaySummery = function (acc) {
         .map(deposit => (deposit * acc.interestRate) / 100)
         .filter(int => int >= 1)
         .reduce((acc, int) => acc + int, 0)
-    
+
     const formattedInterest = formatCurrency(interest, acc.locale, acc.currency)
     labelSumInterest.textContent = formattedInterest
 }
@@ -199,16 +206,47 @@ const updateUI = function (acc) {
     calcDisplaySummery(acc)
 }
 
+// Log out timer
+
+const startLogOutTimer = function () {
+    const tick = function () {
+        const min = String(Math.trunc(time / 60)).padStart(2, 0)
+        const sec = String(time % 60).padStart(2, 0)
+        // in each call, print remainig time
+        labelTimer.textContent = `${min}:${sec}`
+
+        // when timer is at 0 sec, log out the user
+        if (time === 0) {
+            clearInterval(timer)
+
+            labelWelcome.textContent = `Log in to get started`
+
+            // Showing the account
+            containerApp.style.opacity = 0
+        }
+        // Decrease 1s
+        time--
+    }
+
+    // set time to 5 mins
+    let time = 600
+
+    // call the timer every sec
+    tick()
+    const timer = setInterval(tick, 1000)
+
+    return timer
+}
+
 /////////////////////////////////////
 ////////////////////////////////////
 // Event Handlers
-let currentAccount
+let currentAccount, timer
 
 // FAKE ALWAYS LOGIN
-currentAccount = account1
-updateUI(currentAccount)
-containerApp.style.opacity = 100
-
+// currentAccount = account1
+// updateUI(currentAccount)
+// containerApp.style.opacity = 100
 
 // Login event handler
 btnLogin.addEventListener('click', function (e) {
@@ -247,6 +285,11 @@ btnLogin.addEventListener('click', function (e) {
         inputLoginUsername.value = inputLoginPin.value = ''
         inputLoginPin.blur()
 
+        // Starting logout timer
+        if (timer) clearInterval(timer)
+        timer = startLogOutTimer()
+
+        // updating the UI
         updateUI(currentAccount)
     }
 })
@@ -276,6 +319,10 @@ btnTransfer.addEventListener('click', function (e) {
 
         // Update UI
         updateUI(currentAccount)
+
+        // Reset timer
+        clearInterval(timer)
+        timer = startLogOutTimer()
     }
 
     // Cleaning the input fields
@@ -292,14 +339,20 @@ btnLoan.addEventListener('click', function (e) {
         amount > 0 &&
         currentAccount.movements.some(mov => mov >= amount * 0.1)
     ) {
-        // Adding the loan amount
-        currentAccount.movements.push(amount)
+        setTimeout(function () {
+            // Adding the loan amount
+            currentAccount.movements.push(amount)
 
-        // Add date
-        currentAccount.movementsDates.push(new Date().toISOString())
+            // Add date
+            currentAccount.movementsDates.push(new Date().toISOString())
 
-        // Updating UI
-        updateUI(currentAccount)
+            // Updating UI
+            updateUI(currentAccount)
+
+            // Reset timer
+            clearInterval(timer)
+            timer = startLogOutTimer()
+        }, 2500)
     }
 
     inputLoanAmount.value = ''
@@ -337,5 +390,3 @@ btnSort.addEventListener('click', function (e) {
     displayMovements(currentAccount.movements, !sorted)
     sorted = !sorted
 })
-
-
